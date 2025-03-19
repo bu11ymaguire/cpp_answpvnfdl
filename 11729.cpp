@@ -1,7 +1,7 @@
 #include<iostream>
 #include<cmath>
 using namespace std;
-int N = 0;
+long long N = 0;
 void hanoi(int n, int a, int b, int c) 
 {
 	if (n == 0) 
@@ -41,7 +41,7 @@ int main()
 		return 1;
 	}
 	hano(n, 1, 2, 3);
-	printf("%d\n", N); //
+	printf("%lld\n", N); //
 	hanoi(n,1,2,3);
 	return 0;
 }
