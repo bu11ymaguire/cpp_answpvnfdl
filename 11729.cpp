@@ -41,7 +41,7 @@ int main()
 		return 1;
 	}
 	hano(n, 1, 2, 3);
-	printf("%lld\n", N); //
+	printf("%lld\n", N); // cout 대신 빠른 출력이 가능한 printf 사용
 	hanoi(n,1,2,3);
 	return 0;
 }
