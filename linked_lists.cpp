@@ -137,9 +137,14 @@ void Course::write(ofstream& outFile)
     Student* studant = head;
     while (studant != nullptr) 
     {
-        outFile << studant->id << " " << studant->name << endl;
+        outFile << studant->id << " " << studant->name;
         studant = studant->next;
+        if (studant != nullptr) 
+        {
+            outFile << " ";
+        }
     }
+    outFile << endl;
 }
 
 int main(int argc, char* argv[]) {
