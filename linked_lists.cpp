@@ -142,8 +142,6 @@ void Course::write(ofstream& outFile)
     }
 }
 
-
-//스켈레톤 코드
 int main(int argc, char* argv[]) {
     if (argc != 3) {
         cerr << "Correct usage: [program] [input] [output]" << endl;
