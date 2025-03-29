@@ -1,5 +1,6 @@
 #include <iostream>
 using namespace std;
+//투포인터를 안 썼는데 그냥 조건이 널널해서 맞음;
 
 int  main()
 {
