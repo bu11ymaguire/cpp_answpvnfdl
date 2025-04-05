@@ -60,7 +60,8 @@ int main()
         else{break;}
       }
       waiting.push_back({in[i],i});
-      Min.push_back(waiting.front().first);
+      mini = waiting.front().first;
+      Min.push_back(mini);
     }
   }
     
