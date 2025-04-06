@@ -1,4 +1,5 @@
 #include<iostream>
+#include<stack>
 using namespace std;
 
 struct Node{
@@ -33,6 +34,15 @@ void after_up(Node* In){ //후위
     after_up(In->left);
     after_up(In->right);
     cout<<In->data;
+  }
+}
+
+void delete_btmemory(Node* In){  //스택을 이용한 후위순회 방식의 메모리 삭제 공부하기
+  if(In==nullptr){}
+  else{
+    delete_btmemory(In->left);
+    delete_btmemory(In->right);
+    delete In;
   }
 }
 
@@ -81,6 +91,13 @@ int main()
   middle_up(node[0]);
   cout<<'\n';
   after_up(node[0]);
+  
+  //메모리 삭제
+  delete_btmemory(node[0]);
+  //배열 초기화 습관들이기
+  for(int i=0;i<26;i++){
+    node[i]=nullptr;
+  }
 
   return 0;
 }
