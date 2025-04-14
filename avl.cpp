@@ -89,19 +89,77 @@ TreeNode* AVLTree::arrayToAVL(vector<int>& arr, int l, int r) {
 }
 
 TreeNode* AVLTree::findMin() {
-  // Practice 5
+  if(root==nullptr){return nullptr;}
+  TreeNode* node = root;
+  while(node->left!=nullptr){
+    node = node->left;
+  }
+  return node;
 }
 
 TreeNode* AVLTree::findMax() {
-  // Practice 5
+  if(root==nullptr){return nullptr;}
+  TreeNode* node = root;
+  while(node->right!=nullptr){
+    node = node->right;
+  }
+  return node;
 }
 
 TreeNode* AVLTree::search(int query) {
-  // TODO. Practice 6
+  if(root==nullptr){return nullptr;}
+  TreeNode* node = root;
+  while(node!=nullptr)
+  {
+    if(node->key==query)break;
+    else if(node->key<query)node=node->right;
+    else if(node->key>query)node=node->left;
+  }
+  return node;
 }
 
-void AVLTree::insertNode(int k) {
-  // TODO. Practice 7
+void AVLTree::insertNode(int k) 
+{
+  
+  if(search((k))!=nullptr){exit(1);}
+  if(root==nullptr)
+  {
+    TreeNode* node = new TreeNode(k);
+    node->height = 1;
+    root = node;
+  }
+  else
+  {
+    TreeNode* node = root;
+    while(true)
+    {
+      if(node->key<k)
+      {
+        if(node->right==nullptr)
+        {
+          node->right = new TreeNode(k);
+          (node->right)->height = 1;
+          break;
+        }
+        else
+        {
+          node = node->right;
+        }
+      }
+      else{
+        if(node->left==nullptr)
+        {
+          node->left = new TreeNode(k);
+          (node->left)->height = 1;
+          break;
+        }
+        else
+        {
+          node = node->left;  
+        }
+      }
+    }
+  }
 }
 
 void AVLTree::deleteNode(int k) {
@@ -128,8 +186,44 @@ int AVLTree::_getBalance(TreeNode* curr) {
   return curr ? _getHeight(curr->left) - _getHeight(curr->right) : 0;
 }
 
-TreeNode* AVLTree::_rotateLeft(TreeNode* x) {
-  // TODO. Practice 7
+TreeNode* AVLTree::_rotateLeft(TreeNode* x) 
+{
+  if(root==nullptr){return nullptr;}
+  TreeNode* parents = root;
+  bool is_left = false;
+  while(true)
+  {
+    if((parents->key)<(x->key))
+    {
+      if(parents->right==x)
+      {
+        is_left = false;
+        break;
+      }
+      else{parents = parents->right;}
+    }
+    else if((parents->key)>(x->key))
+    {
+      if(parents->left==x){
+        is_left = true;
+        break;
+      }
+      else{parents = parents->left;}
+    }
+  }
+  if(is_left)
+  {
+    TreeNode* tmp = x->right;
+    x->right = tmp->left;
+    parents->left = tmp;
+    tmp-> left = x;
+  }
+  else{
+    TreeNode* tmp = x->right;
+    x->right = tmp->left;
+    parents->right = tmp;
+    tmp->left = x;
+  }
 }
 
 TreeNode* AVLTree::_rotateRight(TreeNode* y) {
