@@ -1,4 +1,4 @@
-//pratice AVL Skeleton Code _Made By ChatGPT
+//pratice AVL Skeleton Code _Made By ChatGPT _ Based on BST Skeleton Code
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
@@ -39,8 +39,8 @@ public:
 
   TreeNode* arrayToAVL(vector<int>&, int, int);  
   bool isEmpty() { return (root == nullptr); }
-  TreeNode* findMin();
-  TreeNode* findMax();
+  TreeNode* findMin(TreeNode*);
+  TreeNode* findMax(TreeNode*);
   TreeNode* search(int);
   void insertNode(int);
   void deleteNode(int);
@@ -55,6 +55,11 @@ private:
   TreeNode* _rotateRight(TreeNode*);
   TreeNode* _balance(TreeNode*);
   void _printSpaces(double, TreeNode*);
+  TreeNode* _insert(TreeNode*, int);
+  TreeNode* _delete(TreeNode* ,int);
+  void Inorder_Recursive(TreeNode*,ofstream&);
+  void Preorder_Recursive(TreeNode*,ofstream&);
+  void Postorder_Recursive(TreeNode*,ofstream&);
 };
 
 // ---------- Implementation Skeleton Below ----------
@@ -88,22 +93,22 @@ TreeNode* AVLTree::arrayToAVL(vector<int>& arr, int l, int r) {
   return node;
 }
 
-TreeNode* AVLTree::findMin() {
+TreeNode* AVLTree::findMin(TreeNode* node) {
   if(root==nullptr){return nullptr;}
-  TreeNode* node = root;
-  while(node->left!=nullptr){
-    node = node->left;
+  TreeNode* find = node;
+  while(find->left!=nullptr){
+    find = find->left;
   }
-  return node;
+  return find;
 }
 
-TreeNode* AVLTree::findMax() {
+TreeNode* AVLTree::findMax(TreeNode* node) {
   if(root==nullptr){return nullptr;}
-  TreeNode* node = root;
-  while(node->right!=nullptr){
-    node = node->right;
+  TreeNode* find = node;
+  while(find->right!=nullptr){
+    find = find->right;
   }
-  return node;
+  return find;
 }
 
 TreeNode* AVLTree::search(int query) {
@@ -118,64 +123,115 @@ TreeNode* AVLTree::search(int query) {
   return node;
 }
 
+TreeNode* AVLTree::_insert(TreeNode* node, int k)
+{
+  if(node==nullptr){
+    return new TreeNode(k);
+  }
+
+  if(node->key<k){
+    node->right = _insert(node->right,k);
+  }
+
+  else if(node->key>k){
+    node->left = _insert(node->left,k);
+  } else{ return node;}
+
+  node->height = 1 + max(_getHeight(node->left),_getHeight(node->right));
+
+  return _balance(node);
+}
+
+
 void AVLTree::insertNode(int k) 
 {
-  
-  if(search((k))!=nullptr){exit(1);}
-  if(root==nullptr)
-  {
-    TreeNode* node = new TreeNode(k);
-    node->height = 1;
-    root = node;
+  if(search(k)!=nullptr){exit(1);}
+  root = _insert(root,k);
+}
+
+TreeNode* AVLTree::_delete(TreeNode* node, int k) 
+//재귀를 이용한 delete는 삭제대상부터 거슬러 올라가기 때문에 부모노드를 찾기 위한 반복문 필요X & 높이 및 밸런스 관리에 용이하다.
+{
+  if(node==nullptr){return nullptr;}
+
+  if(node->key<k){
+    node->right = _delete(node->right,k); 
   }
-  else
-  {
-    TreeNode* node = root;
-    while(true)
-    {
-      if(node->key<k)
-      {
-        if(node->right==nullptr)
-        {
-          node->right = new TreeNode(k);
-          (node->right)->height = 1;
-          break;
-        }
-        else
-        {
-          node = node->right;
-        }
-      }
-      else{
-        if(node->left==nullptr)
-        {
-          node->left = new TreeNode(k);
-          (node->left)->height = 1;
-          break;
-        }
-        else
-        {
-          node = node->left;  
-        }
-      }
+  else if(node->key>k){
+    node->left = _delete(node->left,k);
+  }
+  else{
+    if(node->left==nullptr&&node->right==nullptr){
+      delete node;
+      return nullptr;
+    }
+    else if(node->left==nullptr){
+      TreeNode* child = node->right;
+      delete node;
+      return child;
+    }
+    else if(node->right==nullptr){
+      TreeNode* child = node->left;
+      delete node;
+      return child;
+    }
+    else{
+      TreeNode* success = findMin(node->right);
+      node->key = success->key;
+      node->right = _delete(node->right,success->key);
     }
   }
+
+  node->height = 1 + max(_getHeight(node->left),_getHeight(node->right));
+  return _balance(node);
 }
 
-void AVLTree::deleteNode(int k) {
-  // TODO. Practice 7
+
+void AVLTree::deleteNode(int k) 
+{
+ if(search(k)==nullptr){cerr<<"Error:Invalid access."<<endl;exit(1);}
+ root = _delete(root,k);
 }
 
-void AVLTree::writeInorder(ofstream& outFile) {
-  // Practice 6
+void AVLTree::writeInorder(ofstream& outFile) { //O(n)
+  Inorder_Recursive(root,outFile);
+  outFile<<endl;
+}
+
+void AVLTree::Inorder_Recursive(TreeNode* node,ofstream& outFile){
+  if(node==nullptr){return;}
+
+  Inorder_Recursive(node->left,outFile);
+  outFile<<node->key<<" ";
+  Inorder_Recursive(node->right,outFile);
 }
 
 void AVLTree::writePreorder(ofstream& outFile) {
-  // Practice 6
+  Preorder_Recursive(root,outFile);
+  outFile<<endl;
 }
 
+void AVLTree::Preorder_Recursive(TreeNode* node,ofstream& outFile){
+  if(node==nullptr){return;}
+
+  outFile<<node->key<<" ";
+  Preorder_Recursive(node->left,outFile);
+  Preorder_Recursive(node->right,outFile);
+}
+
+
 void AVLTree::writePostorder(ofstream& outFile) {
-  // Practice 6
+  Postorder_Recursive(root,outFile);
+  outFile<<endl;
+}
+
+void AVLTree::Postorder_Recursive(TreeNode* node,ofstream& outFile)
+{
+  if(node==nullptr){return;}
+
+  Postorder_Recursive(node->left,outFile);
+  Postorder_Recursive(node->right,outFile);
+  outFile<<node->key<<" ";
 }
 
 int AVLTree::_getHeight(TreeNode* curr) {
@@ -186,52 +242,52 @@ int AVLTree::_getBalance(TreeNode* curr) {
   return curr ? _getHeight(curr->left) - _getHeight(curr->right) : 0;
 }
 
-TreeNode* AVLTree::_rotateLeft(TreeNode* x) 
+TreeNode* AVLTree::_rotateLeft(TreeNode* x)//회전에서는 회전만만
 {
-  if(root==nullptr){return nullptr;}
-  TreeNode* parents = root;
-  bool is_left = false;
-  while(true)
-  {
-    if((parents->key)<(x->key))
-    {
-      if(parents->right==x)
-      {
-        is_left = false;
-        break;
-      }
-      else{parents = parents->right;}
-    }
-    else if((parents->key)>(x->key))
-    {
-      if(parents->left==x){
-        is_left = true;
-        break;
-      }
-      else{parents = parents->left;}
-    }
-  }
-  if(is_left)
-  {
-    TreeNode* tmp = x->right;
-    x->right = tmp->left;
-    parents->left = tmp;
-    tmp-> left = x;
-  }
-  else{
-    TreeNode* tmp = x->right;
-    x->right = tmp->left;
-    parents->right = tmp;
-    tmp->left = x;
-  }
+  TreeNode* y = x->right;
+  TreeNode* tmp = y->left; 
+
+  y->left = x;
+  x->right = tmp; //기존의 y의 왼쪽 노드를 x의 오른쪽 노드로 
+
+  x->height = max(_getHeight(x->left),_getHeight(x->right))+1;
+  y->height = max(_getHeight(y->left),_getHeight(y->right))+1;
+
+  return y;
 }
 
-TreeNode* AVLTree::_rotateRight(TreeNode* y) {
-  // TODO. Practice 7
+TreeNode* AVLTree::_rotateRight(TreeNode* x) {
+  TreeNode* y = x->left;
+  TreeNode* tmp = y->right;
+
+  y->right = x;
+  x->left = tmp;
+
+  x->height = max(_getHeight(x->left),_getHeight(x->right))+1;
+  y->height = max(_getHeight(y->left),_getHeight(y->right))+1;
+
+  return y;
 }
 
 TreeNode* AVLTree::_balance(TreeNode* node) {
-  // TODO. Practice 7
+  int b_factor = _getBalance(node);
+  if(b_factor>1)
+  {
+    if(_getBalance(node->left)>0){
+      return _rotateRight(node);
+    }
+    node->left = _rotateLeft(node->left);
+    return _rotateRight(node);
+  }
+  else if(b_factor<-1)
+  {
+    if(_getBalance(node->right)<0){
+      return _rotateLeft(node);
+    }
+    node-> right = _rotateRight(node->right);
+    return _rotateLeft(node);
+  }
+  else{return node;}
 }
 
 void AVLTree::_printSpaces(double n, TreeNode* curr) {
@@ -311,7 +367,7 @@ int main(int argc, char* argv[]) {
       tree.printTree();
       break;
     case FIND_MIN:
-      found = tree.findMin();
+      found = tree.findMin(tree.root);
       if (found == nullptr) {
         cerr << "FindMin failed" << endl;
         exit(1);
@@ -320,7 +376,7 @@ int main(int argc, char* argv[]) {
       }
       break;
     case FIND_MAX:
-      found = tree.findMax();
+      found = tree.findMax(tree.root);
       if (found == nullptr) {
         cerr << "FindMax failed" << endl;
         exit(1);
@@ -333,30 +389,40 @@ int main(int argc, char* argv[]) {
         cerr << "SEARCH: invalid input" << endl;
         exit(1);
       }
-      // Practice 6. Call the function for search
+      found = tree.search(k);
+      if(found == nullptr){
+        cerr << "Search Failed."<<endl;
+        exit(1);
+      }
+      else{outFile<<found->key<<endl;}
       break;
     case INORDER:
-      // Practice 6. Call the function for inorder traversal
+      tree.writeInorder(outFile);
       break;
     case PREORDER:
-      // Practice 6. Call the function for preorder traversal
+      tree.writePreorder(outFile);
       break;
     case POSTORDER:
-      // Practice 6. Call the function for postorder traversal
+      tree.writePostorder(outFile);
       break;
     case INSERT:
       if (!(iss >> k)) {
         cerr << "INSERT: invalid input" << endl;
         exit(1);
       }
-      // TODO. Practice 7. Call the function for insertion
+      if(tree.search(k)!=nullptr){}
+      else{
+        tree.insertNode(k);
+        outFile<<"I "<<k<<endl;
+      }
       break;
     case DELETE:
       if (!(iss >> k)) {
         cerr << "DELETE: invalid input" << endl;
         exit(1);
       }
-      // TODO. Practice 7. Call the function for deletion
+      tree.deleteNode(k);
+      outFile<<"D "<<k<<endl;
       break;
     default:
       cerr << "Undefined operator" << endl;
