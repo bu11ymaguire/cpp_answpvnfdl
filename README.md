@@ -1,3 +1,3 @@
 # The-Hitchhiker-s-Guide-to-the-cpp
-데:코더 &amp; 편없사 스터디
+자료구조론 &amp; 데:코더 스터디
 Assignment 
