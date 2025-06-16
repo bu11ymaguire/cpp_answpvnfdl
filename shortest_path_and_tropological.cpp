@@ -116,51 +116,57 @@ void topologicalSort(ofstream&outFile)
   }
 }
 
-void shortest_path(int from,int to,ofstream&outFile)
+void van_dijk(int from,int to,ofstream &outFile)
 {
-  vector<int> distance(max_vertex,INT_MAX);
-  distance[from]=0;
-  vector<int> precessor(max_vertex,-1);
-  priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> now_root;
-  now_root.push(make_pair(distance[from],from));
+  vector<int> haha(nodes,INT_MAX);
+  haha[from] = 0;
+  vector<int> ancesstor(nodes,-1);
+  priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> now_root;  //{node,distance}
+  now_root.push({from,haha[from]});
   while(!now_root.empty())
   {
-    int current_node = now_root.top().second;
-    int current_distance = now_root.top().first;
+    int now_node = now_root.top().first;
+    int now_weight = now_root.top().second;
     now_root.pop();
 
-    if(current_distance>distance[current_node]||distance[current_node]==INT_MAX){continue;}
-
-    for(int i=0;i<adj_lists[current_node].size();i++)
+    if(now_weight>haha[now_node])
     {
-      int tmp_node = adj_lists[current_node][i].first;
-      int tmp_distance = adj_lists[current_node][i].second;
-      if(current_distance+tmp_distance<distance[tmp_node])
+      continue;
+    }
+    for(int i=0;i<adj_vector[now_node].size();i++)
+    {
+      
+      int current_node = adj_vector[now_node][i].first;
+      int current_weight = adj_vector[now_node][i].second;
+      int sum = now_weight + current_weight;
+
+      if(sum<haha[current_node])
       {
-        distance[tmp_node] = current_distance + tmp_distance;
-        precessor[tmp_node] = current_node; 
-        now_root.push(make_pair(distance[tmp_node],tmp_node));
+        haha[current_node] = sum;
+        now_root.push({current_node,sum});
+        ancesstor[current_node] = now_node;
       }
     }
   }
 
-  if(distance[to]==INT_MAX)
+  if(haha[to]==INT_MAX)
   {
-    outFile<<"Cannot Access"<<endl;
+    outFile<<"This Node is Not Adjacent."<<endl;
+    return;
   }
-  else
+
+  stack<int> way;
+  int now = to;
+
+  while(now!=-1)
   {
-    vector<int> root;
-    int start = to;
-    while(start!=-1)
-    {
-      root.push_back(start);
-      start = precessor[start];
-    }
-    for(int i= root.size()-1;i>0;i--){
-      outFile<<root[i]<<' ';
-    }
-    outFile<<root[0]<<'\n';
+    way.push(now);
+    now = ancesstor[now];
+  }
+
+  while(!way.empty()){
+    outFile<<way.top();
+    way.pop();
   }
 }
 
