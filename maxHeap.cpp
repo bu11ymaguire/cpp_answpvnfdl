@@ -58,44 +58,24 @@ public:
 
 void MaxHeap::maxHeapify(int i) 
 {
-  int current = i;
-  int Left = left(i);
-  int Right = right(i);
+  int largest = i;
+  int L = left(i);
+  int R = right(i);
 
-  if(Left>=count&&Right>=count)
-  {
-    return;
-  }
-  
-  else if(Left<count&&Right>=count)
-  {
-    if(elements[current]<elements[Left])
-    {
-      int tmp = elements[current];
-      elements[current] = elements[Left];
-      elements[Left] = tmp;
-      maxHeapify(Left); 
-    }
+  if(L<count && elements[L]>elements[largest]){
+    largest = L;
   }
 
-  else if(Left<count&&Right<count)
-  {
-    if(elements[current]>elements[Left]&&elements[current]>elements[Right]){
-      return;
-    }
-    else if(elements[Left]>elements[Right]&&elements[Left]>elements[current]){
-      int tmp = elements[current];
-      elements[current] = elements[Left];
-      elements[Left] = tmp;
-      maxHeapify(Left);
-    } else if(elements[Right]>elements[Left]&&elements[Right]>elements[current]){
-      int tmp = elements[current];
-      elements[current] = elements[Right];
-      elements[Right] = tmp;
-      maxHeapify(Right);
-    }
+  if(R<count && elements[R]>elements[largest]){
+    largest = R;
   }
 
+  if(largest!=i){
+    int tmp = elements[i];
+    elements[i] = elements[largest];
+    elements[largest] = tmp;
+    maxHeapify(largest);
+  }
 }
 
 void MaxHeap::insertElement(int x) {
