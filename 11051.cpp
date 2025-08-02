@@ -12,7 +12,7 @@ int main()
     {
         for(int j=1;j<=i-1;j++)
         {
-            dp[i][j] = (dp[i-1][j-1]+dp[i-1][j])%10007;
+            dp[i][j] = (dp[i-1][j-1]+dp[i-1][j])%10007; //모듈러 합동
         }
     }
     cout<<dp[N][m];
