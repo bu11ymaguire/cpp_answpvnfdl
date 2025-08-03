@@ -2,6 +2,7 @@
 #include<vector>
 #include<algorithm>
 using namespace std;
+//1차원 최적화 버전
 
 int main(){
     ios::sync_with_stdio(false); cin.tie(nullptr);
@@ -24,14 +25,14 @@ int main(){
         int now_weight = backpack[i].first;
         int now_value = backpack[i].second;
 
-        for(int j= limit; j>=1; j--)
+        for(int j= limit; j>=now_weight; j--)
         {
           output[j] = max(output[j], output[j-now_weight] + now_value);
         }
           
     }
 
-    cout<<output[n][limit];
+    cout<<output[limit];
 
     return 0;
 }
