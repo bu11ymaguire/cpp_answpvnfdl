@@ -4,7 +4,7 @@
 #include<string>
 #include<queue>
 using namespace std;
-
+//maze, distance 순서쌍 헷갈리지 않기!
 int main()
 {
     ios::sync_with_stdio(false);cin.tie(nullptr);
