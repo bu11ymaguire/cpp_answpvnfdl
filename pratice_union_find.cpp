@@ -17,7 +17,7 @@ public:
         parent[i] = i ;
       }
     }
-    int find(int x) {
+    int find(int x) { //단순히 해당 원소가 어디에 속해 있는지를 출력하는 것이 아닌, 해당 원소가 속해있는 집합의 루트 노드를 출력 -> 루트 노드가 같으면 같은 집합에 소속되어 있음.
       if (parent[x] != x) {
         parent[x] = find(parent[x]);
       }
