@@ -1,48 +1,37 @@
-#include <iostream>
-#include <vector>
-
+#include<bits/stdc++.h>
 using namespace std;
 
-int main()
-{
+int main(){
     ios::sync_with_stdio(false);
-    cin.tie(0);
-    cout.tie(0);
-    int n,m;
-    cin>>n>>m;
-    vector<int> number(n);
-    for(int i=0;i<n;i++)
+    cin.tie(nullptr);
+
+    int N,goal; cin>>N>>goal;
+
+    vector<int> input(N);
+    for(int i = 0 ; i < N; i++)
     {
-        cin>>number[i];
+        cin>>input[i];
     }
-    int possible = 0;
-    int small = n+1;
+
     int sum = 0;
-
-    int start = 0;
-
-    for(int last=0;last<n;last++)
+    int length = 100002;
+    int L = 0;
+    for(int R = 0; R < N; R++)
     {
-        sum+=number[last];
-        while(sum>=m&&start<=last)    ///이 수열에서 연속된 수들의 부분합 중에 그 합이 S '이상'이 되는 것
+        sum+= input[R];
+        while(sum>=goal)
         {
-            possible++;
-            if(small>last-start+1)
-            {
-                small = last - start + 1;
-            }
-            sum-=number[start];
-            start++;
+            length = min(length,R-L+1);
+            sum-=input[L];
+            L++;
         }
     }
 
-    if(possible>0)
-    {
-        cout<<small;
-    }
-    else
-    {
+    if(length==100002){
         cout<<0;
+        return 0;
     }
+
+    cout<<length;
     return 0;
 }
