@@ -1,60 +1,59 @@
-#include<iostream>
-#include<vector>
-#include<algorithm>
-#include<string>
-#include<stack>
+#include<bits/stdc++.h>
+
 using namespace std;
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-int main(){
-    ios::sync_with_stdio(false);cin.tie(nullptr);
-    string s1;string s2;
-    cin>>s1>>s2;
-    vector<vector<int>> check(s1.size()+1,vector<int>(s2.size()+1,0));
-    vector<vector<pair<int,int>>> root(s1.size()+1,vector<pair<int,int>>(s2.size()+1,{-1,-1}));
-    vector<vector<char>> character(s1.size()+1,vector<char>(s2.size()+1,0));  
+    string one,two; cin >> one >> two;
+    int X = one.length(); int Y = two.length();
 
-    for(int i=1;i<=s1.size();i++)
+    vector<vector<int>> dp(Y+1,vector<int>(X+1,0));
+    for(int i = 1; i <= X; i++)
     {
-        for(int j=1;j<=s2.size();j++)
+        for(int j =1; j<=Y; j++)
         {
-            if(s1[i-1]==s2[j-1])
+            if(one[i-1]==two[j-1])
             {
-                check[i][j] = check[i-1][j-1]+1;
-                character[i][j] = s1[i-1];
-                root[i][j]= {i-1,j-1};
+                dp[j][i] = dp[j-1][i-1]+1;
             }
-            else{
-                if(check[i][j-1]>=check[i-1][j])
-                {
-                    check[i][j] = check[i][j-1];
-                    character[i][j]= character[i][j-1];
-                    root[i][j]=root[i][j-1];
-                }else if(check[i-1][j]>check[i][j-1])
-                {
-                    check[i][j] = check[i-1][j];
-                    character[i][j] = character[i-1][j];
-                    root[i][j]=root[i-1][j];
-                }
+            else
+            {
+                dp[j][i] = max(dp[j-1][i],dp[j][i-1]);
             }
         }
     }
-    cout<<check[s1.size()][s2.size()]<<'\n';
-    int current_x = s1.size();
-    int current_y = s2.size();
 
-    char current_character = character[current_x][current_y];
+    int x=X, y= Y;
     stack<char> output;
 
-    while(current_character!=0)
+    while(x!=0&&y!=0)
     {
-        output.push(current_character);
-        int old_1 = current_x; int old_2 = current_y;
-        current_x = root[old_1][old_2].first;
-        current_y = root[old_1][old_2].second;
-        current_character = character[current_x][current_y];
+        if(one[x-1]==two[y-1])
+        {
+            output.push(one[x-1]);
+            x--;
+            y--;
+        }
+        else
+        {
+            if(dp[y-1][x]>=dp[y][x-1])
+            {
+                y--;
+            }
+
+            else
+            {
+                x--;
+            }
+        }
     }
-    while(!output.empty()){
-        cout<<output.top();
+
+    cout << output.size() << '\n';
+    while(!output.empty())
+    {
+        cout << output.top();
         output.pop();
     }
     return 0;
