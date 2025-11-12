@@ -28,9 +28,9 @@ int main()
         for(int X=1;X<=x;X++)
         {
             if(MAP[Y][X]=='W')continue;
-            vector<vector<int>> visited(y+1,vector<int>(x+1,0));
+            vector<vector<int>> visited(y+1,vector<int>(x+1,0)); //매 노드별로 BFS를 진행해서 가장 거리가 긴 값을 출력한다.
             queue<pair<int,int>> q;
-            visited[Y][X] = 1;
+            visited[Y][X] = 1; //방문표시(BFS안에서 재방문 방지 차원),(어짜피 마지막에 출력때 -1로 해당 보정값을 지운다.)
             q.push({X,Y});
             while(!q.empty())
             {
