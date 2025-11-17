@@ -1,7 +1,8 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-map<string,bool> visited;
+set<vector<int>> printed; //set에다가 벡터도 넣을 수 있다!
+vector<bool> visited;
 vector<int> arr;
 vector<int> input;
 
@@ -11,10 +12,12 @@ void DFS(int hello)
 {
     if(hello==m)
     {
-        string confrim;
-        for(int i = 0; i < hello; i++)
+        if(printed.count(arr)) return;
+        printed.insert(arr);  
+
+        for(int i = 0; i < hello ; i++)
         {
-            confrim += 
+            cout << arr[i] <<' ';
         }
         cout << '\n';
         return;
@@ -22,12 +25,12 @@ void DFS(int hello)
 
     for(int i =0; i < n; i++)
     {
-        if(visited[i]==hello)continue;
+        if(visited[i])continue;
+        visited[i] = true;
         arr.push_back(input[i]);
-        visited[i]++;
         DFS(hello+1);
         arr.pop_back();
-        visited[i]--;
+        visited[i] = false;
     }
 }
 
@@ -35,11 +38,13 @@ int main()
 {
     cin >> n >> m;
     input.resize(n);
-    sort(input.begin(),input.end());
+    visited.resize(n);
     for(int i = 0; i < n; i++)
     {
         cin >> input[i];
     }
+
+    sort(input.begin(),input.end());
 
     DFS(0);
     return 0;
